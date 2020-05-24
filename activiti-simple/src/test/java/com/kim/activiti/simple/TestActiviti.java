@@ -256,7 +256,11 @@ public class TestActiviti {
         ProcessInstance processInstance=processEngine.getRuntimeService()
                 .createProcessInstanceQuery()
                 .processInstanceId(processInstanId)
-                .singleResult();
+                .singleResult()
+
+
+
+                ;
 
         //判断流程实例的状态:如果实例id不为空，则该流程实例未完成，如果为空，说明该流程实例已完成。
         if(processInstance!=null){
