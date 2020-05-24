@@ -11,6 +11,7 @@
     <modules>
         <module>activiti-simple</module>
         <module>activiti-spring-boot</module>
+        <module>activiti-process-engine</module>
     </modules>
     <dependencyManagement>
 

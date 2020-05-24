@@ -2,7 +2,7 @@ spring:
   profiles:
     active: dev
   application:
-    name: activity-demo
+    name: activity-spring-boot
 
   datasource:
     druid:
@@ -30,6 +30,6 @@ spring:
     database-schema-update: true  #activiti自动建表策略：true为自动创建
     check-process-definitions: false  #是否检查流程定义文件自动部署，false为不检查
 server:
-  port: 8080
+  port: 9001
 debug: true
 

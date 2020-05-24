@@ -9,7 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>activiti-spring-boot</artifactId>
+    <artifactId>activiti-process-engine</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -62,4 +63,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
