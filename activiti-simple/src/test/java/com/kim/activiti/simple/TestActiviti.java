@@ -297,7 +297,7 @@ public class TestActiviti {
         TaskService taskService=processEngine.getTaskService();
         List<HistoricTaskInstance> historicTaskInstances=processEngine.getHistoryService()
                 .createHistoricTaskInstanceQuery()
-                .processInstanceId(proicessInstanceId)
+                .processInstanceId(proicessInstanceId).unfinished()
                 //.unfinished()//查询未完成的流程节点，即正在活动中的流程节点
                 .list();
         if(null!=historicTaskInstances&&historicTaskInstances.size()>0){
