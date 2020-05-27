@@ -27,8 +27,9 @@ spring:
       filters: stat                       #配置扩展插件，常用的插件有=>stat:监控统计  log4j/slf4:日志  wall:防御sql注入,不配wall，会阻塞alter语句
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000 #通过connectProperties属性来打开mergeSql功能;慢SQL记录
   activiti:
-    database-schema-update: true  #activiti自动建表策略：true为自动创建
-    check-process-definitions: false  #是否检查流程定义文件自动部署，false为不检查
+    jpa-enabled:
+      database-schema-update: true  #activiti自动建表策略：true为自动创建
+          check-process-definitions: false  #是否检查流程定义文件自动部署，false为不检查
 server:
   port: 9001
 debug: true
