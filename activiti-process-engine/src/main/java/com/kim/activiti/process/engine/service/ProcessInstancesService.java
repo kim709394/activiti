@@ -6,4 +6,8 @@ package com.kim.activiti.process.engine.service;
  * @date 2020/5/24
  */
 public interface ProcessInstancesService {
+
+
+
+
 }

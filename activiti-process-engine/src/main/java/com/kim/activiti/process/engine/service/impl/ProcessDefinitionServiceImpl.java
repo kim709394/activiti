@@ -5,6 +5,9 @@ import com.kim.activiti.process.engine.entity.vo.ProcessDefQueryOutputVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessDefinitionVO;
 import com.kim.activiti.process.engine.service.ProcessDefinitionService;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author huangjie
  * @description
@@ -18,6 +21,17 @@ public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
 
     @Override
     public ProcessDefQueryOutputVO queryPaging(ProcessDefQueryInputVO queryInputVO) {
+        return null;
+    }
+
+
+    @Override
+    public List<ProcessDefinitionVO> queryAll() {
+        return null;
+    }
+
+    @Override
+    public List<ProcessDefinitionVO> queryAllBy(Set<String> processDefinitionIds) {
         return null;
     }
 }

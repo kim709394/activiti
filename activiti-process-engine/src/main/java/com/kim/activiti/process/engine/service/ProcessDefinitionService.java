@@ -6,6 +6,7 @@ import com.kim.activiti.process.engine.entity.vo.ProcessDefinitionVO;
 import org.activiti.engine.repository.ProcessDefinition;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author huangjie
@@ -25,6 +26,15 @@ public interface ProcessDefinitionService {
      * */
     ProcessDefQueryOutputVO queryPaging(ProcessDefQueryInputVO queryInputVO);
 
+    /**
+     * 批量查询全部流程定义
+     * */
+    List<ProcessDefinitionVO> queryAll();
+
+    /***
+     *批量查询指定流程定义id集合的流程定义
+     */
+    List<ProcessDefinitionVO> queryAllBy(Set<String>processDefinitionIds);
 
 
 

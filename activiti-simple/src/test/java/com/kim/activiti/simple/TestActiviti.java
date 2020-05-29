@@ -108,7 +108,8 @@ public class TestActiviti {
                 .createDeployment()
                 .addZipInputStream(new ZipInputStream(in))
                 .name("加班流程")
-                .category("办公流程")
+                .tenantId("表单id")
+                .category("办公流程").key("mykey")
                 .deploy();
         System.out.println(deployment);
     }
