@@ -51,8 +51,8 @@ public class TestActivitiSpringboot {
     public void deployProcDef(){
         //获取部署对象
         Deployment deployment=repositoryService.createDeployment()//创建deploymentBuilder对象
-                .addClasspathResource("processes/addWorkBill.bpmn")//加载类路径的流程定义bpmn文件
-                .addClasspathResource("processes/addWorkBill.png")
+                .addClasspathResource("processes/addBill.bpmn")//加载类路径的流程定义bpmn文件
+                .addClasspathResource("processes/addBill.jpg")
                 .name("加班流程")//给部署的流程定义取个名字
                 .category("办公流程")//给部署的定成定义设个类别
                 .tenantId("表单id")

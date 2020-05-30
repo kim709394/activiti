@@ -54,9 +54,12 @@ public class TestActivitiSpringboot2 {
     public void deployProcDef(){
         //获取部署对象
         Deployment deployment=repositoryService.createDeployment()//创建deploymentBuilder对象
-                .addClasspathResource("processes/addWorkBill.bpmn")//加载类路径的流程定义bpmn文件
+                .addClasspathResource("processes/addBill.bpmn")//加载类路径的流程定义bpmn文件
+                .addClasspathResource("processes/addBill.jpg")
                 .name("加班流程")//给部署的流程定义取个名字
                 .category("办公流程")//给部署的定成定义设个类别
+                .tenantId("表单id")
+                
                 .deploy();//部署
         System.out.println("部署的id："+deployment.getId());
         System.out.println("部署的名字："+deployment.getName());
@@ -71,25 +74,23 @@ public class TestActivitiSpringboot2 {
     public void startProcess(){
 
         //指定流程定义的key值，即流程定义id值，启动流程，产生一个流程实例
-        String processDefKey="addWorkBill";
+        String processDeId="addBill:1:35016";
         //设置审批人的流程变量
         Map<String,Object> audits=new HashMap();
-        List<String> managerList= new ArrayList();
-        managerList.add("张三");
-        managerList.add("李四");
-        audits.put("managerList",managerList);
-        List<String> leaderList= new ArrayList();
-        leaderList.add("王五");
-        leaderList.add("赵六");
-        audits.put("leaderList",leaderList);
+       
+        audits.put("master","张三");
+        List<String> leaders= new ArrayList();
+        leaders.add("王五");
+        leaders.add("赵六");
+        audits.put("leaders",leaders);
         List<String> bosses= new ArrayList();
         bosses.add("韩七");
         bosses.add("林八");
-        audits.put("bosses",bosses);
-        audits.put("creator","郑九");
+        audits.put("bossList",bosses);
+        audits.put("提交人","郑九");
         //通过流程定义key值启动流程，取得流程实例，默认是启动该流程定义的最新版本的
         ProcessInstance processInstance=runtimeService
-                .startProcessInstanceByKey(processDefKey,"表单地址url",audits);
+                .startProcessInstanceById(processDeId,audits);
         System.out.println("流程实例的id："+processInstance.getId());
         System.out.println("对应流程定义id："+processInstance.getProcessDefinitionId());
     }
@@ -100,18 +101,16 @@ public class TestActivitiSpringboot2 {
     @Test
     public void complete(){
         //活动中的任务对应的流程实例
-        String processInstanceId="102501";
+        String processInstanceId="37501";
         //指定待办任务id
-        String taskId="115004";
+        String taskId="37513";
         //办理任务,提交审批意见并指定审批类型
         taskService.addComment(taskId,processInstanceId,"审批意见","同意;无补充意见");
         //设置是否同意的流程变量
         Map<String,Object> params=new HashMap();
-        //params.put("isMaster",1);
-        params.put("isManager",1);
-        //params.put("leaderChoose",1);
-        params.put("isLeader",1);
-        params.put("isBoss",1);
+      
+        params.put("isMaster",1);
+     
         taskService.complete(taskId,params);
         System.out.println("办理完成");
     }
@@ -121,7 +120,7 @@ public class TestActivitiSpringboot2 {
      * */
     @Test
     public void queryUnfinishTask(){
-        String assignee="林八";
+        String assignee="张三";
         //创建一个查询对象
         TaskQuery taskQuery=taskService.createTaskQuery();
         //查询待办人的任务列表，办理人或者候选人
@@ -147,7 +146,8 @@ public class TestActivitiSpringboot2 {
         String proicessInstanceId="37501";
         List<HistoricTaskInstance> historicTaskInstances=historyService
                 .createHistoricTaskInstanceQuery()
-                .processInstanceId(proicessInstanceId)
+                //.processDefinitionId("addBill:1:35016")
+                //.processInstanceId(proicessInstanceId)
                 //.unfinished()//查询未完成的流程节点，即正在活动中的流程节点
                 .list();
         if(null!=historicTaskInstances&&historicTaskInstances.size()>0){
