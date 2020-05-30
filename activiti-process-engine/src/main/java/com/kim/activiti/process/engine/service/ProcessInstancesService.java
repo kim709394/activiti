@@ -7,6 +7,11 @@ package com.kim.activiti.process.engine.service;
  */
 public interface ProcessInstancesService {
 
+    /**
+     * 根据流程定义id启动一个流程实例
+     * */
+    String startProcessInstanceByProcessDefId(String processDefinitionId);
+
 
 
 

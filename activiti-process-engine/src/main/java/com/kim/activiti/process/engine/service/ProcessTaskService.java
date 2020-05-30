@@ -8,6 +8,9 @@ package com.kim.activiti.process.engine.service;
 public interface ProcessTaskService {
 
 
+    /**
+     * 根据流程id查询所有
+     * */
 
 
 }

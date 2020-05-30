@@ -6,41 +6,71 @@
     <userTask activiti:assignee="${creator}" activiti:exclusive="true" id="creator" name="提交人"/>
     <exclusiveGateway gatewayDirection="Unspecified" id="isManager" name="经理是否同意"/>
     <sequenceFlow id="_12" name="managerFalse" sourceRef="isManager" targetRef="creator">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isManager==0}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[
+        ]]>
+      </conditionExpression>
     </sequenceFlow>
-    <exclusiveGateway gatewayDirection="Unspecified" id="领导是否同意" name="isLeader"/>
+    <exclusiveGateway gatewayDirection="Unspecified" id="isLeader" name="领导是否同意"/>
     <userTask activiti:candidateUsers="${bosses}" activiti:exclusive="true" id="boss" name="老板">
       <extensionElements>
         <activiti:taskListener event="create"/>
+        <activiti:taskListener class="com.kim.activiti.spring.boot.tasklistener.BossCreateTaskListener" event="create"/>
+        <activiti:taskListener class="com.kim.activiti.spring.boot.tasklistener.BossAssignmentTaskListener" event="assignment"/>
+        <activiti:taskListener class="com.kim.activiti.spring.boot.tasklistener.BossCompletionTaskListener" event="delete"/>
+        <activiti:executionListener class="com.kim.activiti.spring.boot.executionListener.AddWorkBillStartExecutionListener" event="start"/>
+        <activiti:executionListener class="com.kim.activiti.spring.boot.executionListener.AddWorkBillEndExecutionListener" event="end"/>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="_20" name="leaderFalse" sourceRef="领导是否同意" targetRef="creator">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isLeader==0}]]></conditionExpression>
+    <sequenceFlow id="_20" name="leaderFalse" sourceRef="isLeader" targetRef="creator">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[
+        ]]>
+      </conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="_21" name="leaderTrue" sourceRef="领导是否同意" targetRef="boss">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isLeader==1}]]></conditionExpression>
+    <sequenceFlow id="_21" name="leaderTrue" sourceRef="isLeader" targetRef="boss">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[
+        ]]>
+      </conditionExpression>
     </sequenceFlow>
-    <exclusiveGateway gatewayDirection="Unspecified" id="isBoss" name="领导是否同意"/>
+    <exclusiveGateway gatewayDirection="Unspecified" id="isBoss" name="老板是否同意"/>
     <sequenceFlow id="_23" sourceRef="boss" targetRef="isBoss"/>
     <sequenceFlow id="_24" name="bossTrue" sourceRef="isBoss" targetRef="_3">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isBoss==1}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[
+        ]]>
+      </conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_25" name="bossFlase" sourceRef="isBoss" targetRef="creator">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isBoss==0}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[
+        ]]>
+      </conditionExpression>
     </sequenceFlow>
     <userTask activiti:assignee="${managers}" activiti:exclusive="true" id="manager" name="主管">
-      <multiInstanceLoopCharacteristics activiti:collection="${managerList}" activiti:elementVariable="managers" isSequential="true"/>
+      <extensionElements>
+        <activiti:taskListener event="create"/>
+        <activiti:executionListener event="start"/>
+      </extensionElements>
     </userTask>
-    <userTask activiti:assignee="${leaders}" activiti:exclusive="true" id="leaer" name="领导">
-      <multiInstanceLoopCharacteristics activiti:collection="${leaderList}" activiti:elementVariable="leaders" isSequential="false"/>
+    <userTask activiti:assignee="${leaders}" activiti:exclusive="true" id="leader" name="领导">
+      <extensionElements>
+        <activiti:taskListener event="create"/>
+        <activiti:taskListener event="create"/>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics activiti:collection="${leaderList}" activiti:elementVariable="leaders" isSequential="true"/>
     </userTask>
     <sequenceFlow id="_7" sourceRef="_2" targetRef="manager"/>
     <sequenceFlow id="_8" sourceRef="creator" targetRef="manager"/>
     <sequenceFlow id="_9" sourceRef="manager" targetRef="isManager"/>
-    <sequenceFlow id="_10" name="managerTrue" sourceRef="isManager" targetRef="leaer">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isManager==1}]]></conditionExpression>
+    <sequenceFlow id="_10" name="managerTrue" sourceRef="isManager" targetRef="leader">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[
+        ]]>
+      </conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="_11" sourceRef="leaer" targetRef="领导是否同意"/>
+    <sequenceFlow id="_11" sourceRef="leader" targetRef="isLeader"/>
   </process>
   <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
     <bpmndi:BPMNPlane bpmnElement="addWorkBill">
@@ -68,7 +98,7 @@
           <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="领导是否同意" id="Shape-领导是否同意" isMarkerVisible="false">
+      <bpmndi:BPMNShape bpmnElement="isLeader" id="Shape-isLeader" isMarkerVisible="false">
         <omgdc:Bounds height="32.0" width="32.0" x="510.0" y="420.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
@@ -92,7 +122,7 @@
           <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="leaer" id="Shape-leaer">
+      <bpmndi:BPMNShape bpmnElement="leader" id="Shape-leader">
         <omgdc:Bounds height="55.0" width="85.0" x="305.0" y="325.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
@@ -130,14 +160,14 @@
           <omgdc:Bounds height="83.0" width="0.0" x="0.0" y="5.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_7" id="BPMNEdge__7" sourceElement="_2" targetElement="_5">
+      <bpmndi:BPMNEdge bpmnElement="_7" id="BPMNEdge__7" sourceElement="_2" targetElement="manager">
         <omgdi:waypoint x="366.0" y="37.0"/>
         <omgdi:waypoint x="366.0" y="160.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="creator" targetElement="_5">
+      <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="creator" targetElement="manager">
         <omgdi:waypoint x="575.0" y="100.0"/>
         <omgdi:waypoint x="400.0" y="100.0"/>
         <omgdi:waypoint x="400.0" y="160.0"/>
@@ -145,14 +175,14 @@
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_9" id="BPMNEdge__9" sourceElement="_5" targetElement="isManager">
+      <bpmndi:BPMNEdge bpmnElement="_9" id="BPMNEdge__9" sourceElement="manager" targetElement="isManager">
         <omgdi:waypoint x="400.0" y="187.5"/>
         <omgdi:waypoint x="515.0" y="221.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_20" id="BPMNEdge__20" sourceElement="领导是否同意" targetElement="creator">
+      <bpmndi:BPMNEdge bpmnElement="_20" id="BPMNEdge__20" sourceElement="isLeader" targetElement="creator">
         <omgdi:waypoint x="542.0" y="436.0"/>
         <omgdi:waypoint x="625.0" y="275.0"/>
         <omgdi:waypoint x="625.0" y="135.0"/>
@@ -160,7 +190,7 @@
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_11" id="BPMNEdge__11" sourceElement="_6" targetElement="领导是否同意">
+      <bpmndi:BPMNEdge bpmnElement="_11" id="BPMNEdge__11" sourceElement="leader" targetElement="isLeader">
         <omgdi:waypoint x="345.0" y="380.0"/>
         <omgdi:waypoint x="345.0" y="410.0"/>
         <omgdi:waypoint x="510.0" y="436.0"/>
@@ -168,7 +198,7 @@
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_21" id="BPMNEdge__21" sourceElement="领导是否同意" targetElement="boss">
+      <bpmndi:BPMNEdge bpmnElement="_21" id="BPMNEdge__21" sourceElement="isLeader" targetElement="boss">
         <omgdi:waypoint x="525.0" y="451.0"/>
         <omgdi:waypoint x="525.0" y="525.0"/>
         <omgdi:waypoint x="415.0" y="577.5"/>
@@ -176,7 +206,7 @@
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_10" id="BPMNEdge__10" sourceElement="isManager" targetElement="_6">
+      <bpmndi:BPMNEdge bpmnElement="_10" id="BPMNEdge__10" sourceElement="isManager" targetElement="leader">
         <omgdi:waypoint x="530.0" y="236.0"/>
         <omgdi:waypoint x="530.0" y="299.0"/>
         <omgdi:waypoint x="390.0" y="352.5"/>

@@ -122,12 +122,12 @@ public class TestActiviti {
     @Test
     public void process(){
         //指定流程定义的key值，即流程定义id值，启动流程，产生一个流程实例
-        String processDefKey="addWorkBill";
+        String processDefId="leaveBill:1:4";
         //获得运行时服务
         RuntimeService runtimeService=processEngine.getRuntimeService();
         //通过流程定义key值启动流程，取得流程实例，默认是启动该流程定义的最新版本的
         ProcessInstance processInstance=runtimeService
-                .startProcessInstanceByKey(processDefKey);
+                .startProcessInstanceById(processDefId);
         System.out.println("流程实例的id："+processInstance.getId());
         System.out.println("对应流程定义id："+processInstance.getProcessDefinitionId());
     }
