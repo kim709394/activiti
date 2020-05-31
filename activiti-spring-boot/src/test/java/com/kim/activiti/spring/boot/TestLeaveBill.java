@@ -118,9 +118,11 @@ public class TestLeaveBill {
         params.put("isPresident",1);
 
         params.put("presidentCount",2);
-        taskService.setVariableLocal(taskId,"operation","user");
+        //taskService.setVariableLocal(taskId,"operation","user");
+        String assignee="韩七";
+        taskService.setOwner(taskId,assignee);
         taskService.setDueDate(taskId,new Date());
-        taskService.setAssignee(taskId,"韩七");
+        taskService.setAssignee(taskId,assignee);
         taskService.complete(taskId,params);
         System.out.println("办理完成");
     }
@@ -158,13 +160,14 @@ public class TestLeaveBill {
                 .createHistoricTaskInstanceQuery()
                 //.processDefinitionId("addBill:1:35016")
                 .processInstanceId(proicessInstanceId)
-                //.finished()
-                .unfinished()//查询未完成的流程节点，即正在活动中的流程节点
+                .finished()
+                //.unfinished()//查询未完成的流程节点，即正在活动中的流程节点
                 .list();
         if(null!=historicTaskInstances&&historicTaskInstances.size()>0){
             for (HistoricTaskInstance historicTaskInstance: historicTaskInstances
             ) {
-                System.out.println(historicTaskInstance);
+                Map<String, Object> taskLocalVariables = historicTaskInstance.getTaskLocalVariables();
+                System.out.println(taskLocalVariables);
                 System.out.println(historicTaskInstance.getAssignee());
             }
         }
