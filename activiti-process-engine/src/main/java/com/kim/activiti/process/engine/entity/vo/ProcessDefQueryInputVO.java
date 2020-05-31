@@ -20,6 +20,6 @@ public class ProcessDefQueryInputVO {
 
     /**类型*/
     private String catagory;
-
+   
 
 }
