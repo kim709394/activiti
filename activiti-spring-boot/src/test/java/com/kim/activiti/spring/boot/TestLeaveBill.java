@@ -1,8 +1,4 @@
-package com.kim.activiti.spring.boot; /**
- * @author huangjie
- * @description
- * @date 2020/5/31
- */
+package com.kim.activiti.spring.boot;
 
 import com.kim.activiti.spring.boot.ActivitiApplication;
 import org.activiti.engine.HistoryService;
@@ -22,7 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.*;
-
+/**
+ * @author huangjie
+ * @description
+ * @date 2020/5/31
+ */
 /**
  * 离职流程测试
  * 多人审批(顺序)且带结束条件、多人审批(并发)且带结束条件、多人审批(并发)不带结束条件
@@ -124,6 +124,7 @@ public class TestLeaveBill {
         taskService.setDueDate(taskId,new Date());
         taskService.setAssignee(taskId,assignee);
         taskService.complete(taskId,params);
+        taskService.createTaskQuery().taskId(taskId).singleResult().getTaskDefinitionKey();
         System.out.println("办理完成");
     }
 
