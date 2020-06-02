@@ -1,5 +1,7 @@
 package com.kim.activiti.process.engine.service;
 
+import java.util.Map;
+
 /**
  * @author huangjie
  * @description   流程实例服务
@@ -14,5 +16,9 @@ public interface ProcessInstancesService {
 
 
 
+    /**
+     * 获取初始流程变量
+     * */
+    Map<String,Object> getInitProcessVariables(String processDefinitionId);
 
 }

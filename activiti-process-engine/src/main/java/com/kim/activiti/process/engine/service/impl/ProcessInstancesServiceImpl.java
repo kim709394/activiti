@@ -2,6 +2,8 @@ package com.kim.activiti.process.engine.service.impl;
 
 import com.kim.activiti.process.engine.service.ProcessInstancesService;
 
+import java.util.Map;
+
 /**
  * @author huangjie
  * @description
@@ -11,6 +13,11 @@ public class ProcessInstancesServiceImpl implements ProcessInstancesService {
 
 	@Override
 	public String startProcessInstanceByProcessDefId(String processDefinitionId) {
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> getInitProcessVariables(String processDefinitionId) {
 		return null;
 	}
 }
