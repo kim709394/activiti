@@ -6,6 +6,7 @@ import com.kim.activiti.process.engine.entity.vo.ProcessDefinitionVO;
 import com.kim.activiti.process.engine.service.ProcessDefinitionService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,5 +34,15 @@ public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
     @Override
     public List<ProcessDefinitionVO> queryAllBy(Set<String> processDefinitionIds) {
         return null;
+    }
+
+    @Override
+    public Map<String, Object> getInitProcessVariables(String processDefinitionId) {
+        return null;
+    }
+
+    @Override
+    public void setInitProcessVariables(String processDefinitionId, Map<String, Object> initProcessVariables) {
+
     }
 }

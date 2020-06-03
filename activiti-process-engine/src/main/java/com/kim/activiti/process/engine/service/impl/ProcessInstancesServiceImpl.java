@@ -16,8 +16,5 @@ public class ProcessInstancesServiceImpl implements ProcessInstancesService {
 		return null;
 	}
 
-	@Override
-	public Map<String, Object> getInitProcessVariables(String processDefinitionId) {
-		return null;
-	}
+
 }

@@ -17,9 +17,11 @@ public class ProcessInstanceTaskVO {
 
     private String name;
 
-    private List<String> assigneeId;
+    private String assignee;
 
     private String platform;
+
+    private String common;
 
     private boolean isFinished;
 

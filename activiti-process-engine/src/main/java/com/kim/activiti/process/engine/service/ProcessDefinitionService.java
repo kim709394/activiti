@@ -6,6 +6,7 @@ import com.kim.activiti.process.engine.entity.vo.ProcessDefinitionVO;
 import org.activiti.engine.repository.ProcessDefinition;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,5 +38,15 @@ public interface ProcessDefinitionService {
     List<ProcessDefinitionVO> queryAllBy(Set<String>processDefinitionIds);
 
 
+    /**
+     * 获取初始流程变量
+     * */
+    Map<String,Object> getInitProcessVariables(String processDefinitionId);
+
+
+    /**
+     * 设置初始流程变量
+     * */
+    void setInitProcessVariables(String processDefinitionId,Map<String,Object> initProcessVariables);
 
 }
