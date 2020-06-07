@@ -12,10 +12,14 @@ public interface ProcessTaskService {
 
 
     /**
-     * 根据流程id查询所有任务节点
+     * 根据流程实例id查询所有任务节点
      * */
     ProcessInstanceTaskQueryOutputVO queryPagingTask(ProcessInstanceTaskQueryInputVO processInstanceTaskQueryInputVO);
 
+
+    /**
+     * 根据待办人名字查询待办任务列表
+     * */
 
 
 
