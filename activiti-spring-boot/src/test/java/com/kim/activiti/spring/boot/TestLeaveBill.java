@@ -96,7 +96,7 @@ public class TestLeaveBill {
 
         //通过流程定义key值启动流程，取得流程实例，默认是启动该流程定义的最新版本的
         ProcessInstance processInstance=runtimeService
-                .startProcessInstanceById(processDeId,audits);
+                .startProcessInstanceById(processDeId,"创建人",audits);
         System.out.println("流程实例的id："+processInstance.getId());
         System.out.println("对应流程定义id："+processInstance.getProcessDefinitionId());
     }
@@ -120,10 +120,20 @@ public class TestLeaveBill {
         params.put("presidentCount",2);
         //taskService.setVariableLocal(taskId,"operation","user");
         String assignee="韩七";
-        taskService.setOwner(taskId,assignee);
+        /**用于区别系统完成的任务还是人工完成的任务，多人审批时设置了完成条件，没有手工完成的任务将系统自动完成，此时这
+        *个字段为null，还有一种情况就是需要跳过某个任务节点时，可以在后台完成这个任务，不需要审批人进行审批
+         * 也可根据这个字段进行过滤。用于查询任务时，审批人完成:human,后台完成:system,工作流框架自动完成:null
+         * 可以根据这个字段筛选掉系统审批的任务，只查询owner为human的任务*/
+        taskService.setOwner(taskId,"human");
+        //系统自动完成
+        //taskService.setOwner(taskId,"system");
+        //设置审批处理时间
         taskService.setDueDate(taskId,new Date());
+        //设置审批人
         taskService.setAssignee(taskId,assignee);
+        //完成任务，同时设置流程变量
         taskService.complete(taskId,params);
+        //根据任务key值执行完成任务的业务监听逻辑
         taskService.createTaskQuery().taskId(taskId).singleResult().getTaskDefinitionKey();
         System.out.println("办理完成");
     }
@@ -176,7 +186,7 @@ public class TestLeaveBill {
         //查询所有流程任务
         List<Task> list = taskService.createTaskQuery().processInstanceId(proicessInstanceId).list();
         System.out.println(list);
-        //查询审批意见，可根据历史任务节点对象historicTaskInstance和审批意见对象comment的taskId进行对应的匹配
+        //查询审批意见，
         List<Comment> comments=taskService
                 .getProcessInstanceComments(proicessInstanceId);
         if(null!=comments&&comments.size()>0){

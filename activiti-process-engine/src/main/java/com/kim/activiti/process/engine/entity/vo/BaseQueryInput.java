@@ -5,12 +5,13 @@ import lombok.Data;
 /**
  * @author huangjie
  * @description
- * @date 2020/6/3
+ * @date 2020/6/8
  */
 @Data
-public class ProcessInstanceTaskQueryInputVO extends BaseQueryInput {
+public class BaseQueryInput {
 
+    protected Integer pageNo;
 
-    private String processInstanceId;
+    protected Integer pageSize=8;
 
 }

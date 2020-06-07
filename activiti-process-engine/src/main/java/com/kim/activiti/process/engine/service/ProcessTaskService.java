@@ -1,7 +1,6 @@
 package com.kim.activiti.process.engine.service;
 
-import com.kim.activiti.process.engine.entity.vo.ProcessInstanceTaskQueryInputVO;
-import com.kim.activiti.process.engine.entity.vo.ProcessInstanceTaskQueryOutputVO;
+import com.kim.activiti.process.engine.entity.vo.*;
 
 /**
  * @author huangjie
@@ -12,15 +11,20 @@ public interface ProcessTaskService {
 
 
     /**
-     * 根据流程实例id查询所有任务节点
+     * 根据流程实例id分页查询所有任务节点
      * */
-    ProcessInstanceTaskQueryOutputVO queryPagingTask(ProcessInstanceTaskQueryInputVO processInstanceTaskQueryInputVO);
+    ProcessInstanceTaskQueryOutputVO queryPagingTasks(ProcessInstanceTaskQueryInputVO processInstanceTaskQueryInputVO);
 
 
     /**
-     * 根据待办人名字查询待办任务列表
+     * 根据待办人名字分页查询待办任务列表
      * */
+    PendingTaskQueryOutputVO queryPagingPendingTasks(PendingTaskQueryInputVO pendingTaskQueryInputVO);
 
 
+    /**
+     * 办理任务
+     * */
+    void commitTask(CommitTaskVO commitTaskVO);
 
 }
