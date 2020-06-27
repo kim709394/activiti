@@ -28,5 +28,8 @@ public class ProcessDefinitionVO {
     /**表单id*/
     private String tenantId;
 
+    /**流程定义版本*/
+    private Integer version;
+
 
 }

@@ -14,8 +14,8 @@ import java.util.List;
 public class ProcessInstanceTaskVO {
     /**任务id*/
     private String taskId;
-    /**紧跟着的下一级任务id*/
-    private String nextTaskId;
+    /**紧跟着的上一级任务id*/
+    private String parentTaskId;
     /**任务名字*/
     private String name;
     /**审批人*/
@@ -30,6 +30,8 @@ public class ProcessInstanceTaskVO {
     private Date dueDate;
     /**任务创建时间*/
     private Date createTime;
+    /**任务结束时间*/
+    private Date completeTime;
 
 
 

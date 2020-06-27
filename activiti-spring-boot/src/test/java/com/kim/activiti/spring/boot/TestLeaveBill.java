@@ -135,6 +135,8 @@ public class TestLeaveBill {
         taskService.complete(taskId,params);
         //根据任务key值执行完成任务的业务监听逻辑
         taskService.createTaskQuery().taskId(taskId).singleResult().getTaskDefinitionKey();
+        //存储用户审批时所在平台
+        taskService.createTaskQuery().taskId(taskId).singleResult().setDescription("platform:平台类型：安卓、web、微信等");
         System.out.println("办理完成");
     }
 
@@ -185,7 +187,7 @@ public class TestLeaveBill {
 
         //查询所有流程任务
         List<Task> list = taskService.createTaskQuery().processInstanceId(proicessInstanceId).list();
-        System.out.println(list);
+        System.out.println(list.get(0));
         //查询审批意见，
         List<Comment> comments=taskService
                 .getProcessInstanceComments(proicessInstanceId);

@@ -13,13 +13,13 @@ import java.util.List;
 public class BaseQueryOutput<T> {
 
 
-    protected Integer pageNo;
+    protected Integer pageNo;//页码
 
-    protected Integer pageSize=8;
+    protected Integer pageSize=8;//每页多少条
 
-    protected Integer pageCount;
+    protected Integer pageCount;//总记录数
 
-    protected Integer totalPage;
+    protected Integer totalPage;//总页数
 
     protected List<T> list;
 }
