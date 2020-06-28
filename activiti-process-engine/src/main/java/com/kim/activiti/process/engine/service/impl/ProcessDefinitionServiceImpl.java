@@ -7,6 +7,7 @@ import com.kim.activiti.process.engine.entity.vo.ProcessDefinitionVO;
 import com.kim.activiti.process.engine.service.ProcessDefinitionService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.apache.commons.lang3.StringUtils;
@@ -26,13 +27,15 @@ import java.util.zip.ZipInputStream;
  * @date 2020/5/27
  */
 @Service
-@Transactional
+
 public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
+
 
     @Autowired
     RepositoryService repositoryService;
 
     @Override
+    @Transactional
     public String deployProcessDef(ProcessDefinitionVO processDefinitionVO) {
         Deployment deployment = repositoryService.createDeployment()//创建deploymentBuilder对象
                 .addZipInputStream(new ZipInputStream(processDefinitionVO.getZipIn()))
@@ -45,6 +48,7 @@ public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
     }
 
     @Override
+    @Transactional
     public ProcessDefQueryOutputVO queryPaging(ProcessDefQueryInputVO queryInputVO) {
         //总记录数
         long count = getProcessDefsByConditions(queryInputVO).count();
@@ -94,7 +98,8 @@ public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
             for (ProcessDefinition processDef : processDefinitions) {
                 ProcessDefinitionVO processDefinitionVO = new ProcessDefinitionVO();
                 processDefinitionVO.setId(processDef.getId());
-                processDefinitionVO.setCatagory(processDef.getCategory());
+                Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(processDef.getDeploymentId()).singleResult();
+                processDefinitionVO.setCatagory(deployment.getCategory());
                 processDefinitionVO.setName(processDef.getName());
                 processDefinitionVO.setTenantId(processDef.getTenantId());
                 processDefinitionVO.setVersion(processDef.getVersion());
@@ -105,24 +110,28 @@ public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
     }
 
     @Override
+    @Transactional
     public List<ProcessDefinitionVO> queryAll() {
         List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().orderByDeploymentId().desc().latestVersion().list();
         return convertProcessDef(processDefinitions);
     }
 
     @Override
+    @Transactional
     public List<ProcessDefinitionVO> queryAllBy(Set<String> processDefinitionIds) {
         List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().processDefinitionIds(processDefinitionIds).orderByDeploymentId().desc().latestVersion().list();
         return convertProcessDef(processDefinitions);
     }
 
     @Override
+    @Transactional
     public Map<String, Object> getInitProcessVariables(String processDefinitionId) {
         //从数据库查
         return null;
     }
 
     @Override
+    @Transactional
     public void setInitProcessVariables(InitProcessVariablesVO initProcessVariables) {
         //存入数据库
     }

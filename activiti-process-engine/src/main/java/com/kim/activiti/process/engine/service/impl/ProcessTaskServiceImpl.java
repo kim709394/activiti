@@ -29,7 +29,7 @@ import java.util.List;
  * @date 2020/5/27
  */
 @Service
-@Transactional
+
 public class ProcessTaskServiceImpl  implements ProcessTaskService {
 
     @Autowired
@@ -38,10 +38,11 @@ public class ProcessTaskServiceImpl  implements ProcessTaskService {
     private TaskService taskService;
     @Autowired
     private RepositoryService repositoryService;
-    @Autowired
+    @Autowired(required = false)
     private List<CommitTaskListener> commitTaskListeners;
 
     @Override
+    @Transactional
     public ProcessInstanceTaskQueryOutputVO queryPagingTasks(ProcessInstanceTaskQueryInputVO processInstanceTaskQueryInputVO) {
         //获取历史任务查询对象
         HistoricTaskInstanceQuery historicTaskInstanceQuery = historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstanceTaskQueryInputVO.getProcessInstanceId());
@@ -72,6 +73,7 @@ public class ProcessTaskServiceImpl  implements ProcessTaskService {
     }
 
     //对象转换
+    @Transactional
     private List<ProcessInstanceTaskVO> convertTask(List<HistoricTaskInstance> historicTaskInstances){
         List<ProcessInstanceTaskVO> processInstanceTaskVOs=new ArrayList<>();
         if(historicTaskInstances!=null&&historicTaskInstances.size()>0){
@@ -95,6 +97,7 @@ public class ProcessTaskServiceImpl  implements ProcessTaskService {
     }
 
     @Override
+    @Transactional
     public PendingTaskQueryOutputVO queryPagingPendingTasks(PendingTaskQueryInputVO pendingTaskQueryInputVO) {
         //根据条件获取查询对象
         TaskQuery taskQuery = getTaskQuery(pendingTaskQueryInputVO);
@@ -114,6 +117,7 @@ public class ProcessTaskServiceImpl  implements ProcessTaskService {
         return pendingTaskQueryOutputVO;
     }
 
+    @Transactional
     private List<PendingTaskVO> convertTask(List<Task> tasks,String assignee){
         List<PendingTaskVO> pendingTaskVOs=new ArrayList<>();
         if(tasks!=null&&tasks.size()>0){
@@ -136,6 +140,7 @@ public class ProcessTaskServiceImpl  implements ProcessTaskService {
         return pendingTaskVOs;
     }
 
+    @Transactional
     private TaskQuery getTaskQuery(PendingTaskQueryInputVO queryInputVO){
         TaskQuery taskQuery = taskService.createTaskQuery();
         if(StringUtils.isNotEmpty(queryInputVO.getAssignee())){
@@ -148,6 +153,7 @@ public class ProcessTaskServiceImpl  implements ProcessTaskService {
     }
 
     @Override
+    @Transactional
     public void commitTask(CommitTaskVO commitTaskVO) {
         //获取任务对象
         Task task = taskService.createTaskQuery().taskId(commitTaskVO.getTaskId()).singleResult();

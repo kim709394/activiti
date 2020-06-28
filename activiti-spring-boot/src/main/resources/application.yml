@@ -30,6 +30,6 @@ spring:
     database-schema-update: true  #activiti自动建表策略：true为自动创建
     check-process-definitions: false  #是否检查流程定义文件自动部署，false为不检查
 server:
-  port: 9001
+  port: 9002
 debug: true
 

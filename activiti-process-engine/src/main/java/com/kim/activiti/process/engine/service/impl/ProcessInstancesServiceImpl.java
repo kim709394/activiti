@@ -27,7 +27,7 @@ import java.util.Map;
  * @date 2020/5/27
  */
 @Service
-@Transactional
+
 public class ProcessInstancesServiceImpl implements ProcessInstancesService {
 
 	@Autowired
@@ -36,10 +36,11 @@ public class ProcessInstancesServiceImpl implements ProcessInstancesService {
 	private ProcessDefinitionService processDefinitionService;
 	@Autowired
 	private HistoryService historyService;
-	@Autowired
+	@Autowired(required = false)
 	private List<ProcessInstanceStartListener> processInstanceStartListeners;
 
 	@Override
+	@Transactional
 	public String startProcessInstanceByProcessDefId(StartProcessInstanceVO startProcessInstanceVO) {
 		Map<String, Object> initProcessVariables = processDefinitionService.getInitProcessVariables(startProcessInstanceVO.getProcessDefinitionId());
 		if(processInstanceStartListeners!=null&&processInstanceStartListeners.size()>0){
@@ -57,6 +58,7 @@ public class ProcessInstancesServiceImpl implements ProcessInstancesService {
 	}
 
 	@Override
+	@Transactional
 	public ProcessInstanceQueryOutputVO queryPagingProcessInstances(ProcessInstanceQueryInputVO processInstanceQueryInputVO) {
 		//计算总记录数
 		long count=getQueryByCondition(processInstanceQueryInputVO).count();
@@ -87,6 +89,7 @@ public class ProcessInstancesServiceImpl implements ProcessInstancesService {
 	}
 
 	//对象转换
+	@Transactional
 	private List<ProcessInstanceVO> convertProcessInstances(List<HistoricProcessInstance> historicProcessInstances){
 		List<ProcessInstanceVO> processInstanceVOs=new ArrayList<>();
 		if(historicProcessInstances!=null&&historicProcessInstances.size()>0){
@@ -107,6 +110,7 @@ public class ProcessInstancesServiceImpl implements ProcessInstancesService {
 	}
 
 	//根据查询条件获取查询对象
+	@Transactional
 	private HistoricProcessInstanceQuery getQueryByCondition(ProcessInstanceQueryInputVO processInstanceQueryInputVO){
 		HistoricProcessInstanceQuery historicProcessInstanceQuery = historyService.createHistoricProcessInstanceQuery();
 		if(StringUtils.isNotEmpty(processInstanceQueryInputVO.getProcessDefinitionId())){
@@ -122,6 +126,7 @@ public class ProcessInstancesServiceImpl implements ProcessInstancesService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteProcessInstance(String processInstanceId) {
 		historyService.deleteHistoricProcessInstance(processInstanceId);
 	}
