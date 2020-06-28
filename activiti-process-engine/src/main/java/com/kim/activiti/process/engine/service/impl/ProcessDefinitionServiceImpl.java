@@ -1,5 +1,6 @@
 package com.kim.activiti.process.engine.service.impl;
 
+import com.kim.activiti.process.engine.entity.vo.InitProcessVariablesVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessDefQueryInputVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessDefQueryOutputVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessDefinitionVO;
@@ -122,7 +123,7 @@ public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
     }
 
     @Override
-    public void setInitProcessVariables(String processDefinitionId, Map<String, Object> initProcessVariables) {
+    public void setInitProcessVariables(InitProcessVariablesVO initProcessVariables) {
         //存入数据库
     }
 }

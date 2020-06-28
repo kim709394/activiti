@@ -21,7 +21,10 @@ public class CommitTaskVO {
     private String assignee;
     /**流程变量*/
     private Map<String,Object> processVariables;
-
+    /**审批平台*/
+    private String platform;
+    /**审批类别:human:手动，system:系统自动*/
+    private String owner;
 
 
 }

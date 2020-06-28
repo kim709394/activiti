@@ -1,5 +1,6 @@
 package com.kim.activiti.process.engine.service;
 
+import com.kim.activiti.process.engine.entity.vo.InitProcessVariablesVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessDefQueryInputVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessDefQueryOutputVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessDefinitionVO;
@@ -25,7 +26,7 @@ public interface ProcessDefinitionService {
     String deployProcessDef(ProcessDefinitionVO processDefinitionVO);
 
     /**
-     * 查询流程定义
+     * 分页查询流程定义
      * @param queryInputVO 分页查询流程定义输入对象
      * @return ProcessDefQueryOutputVO 分页查询流程定义输出对象
      * */
@@ -55,9 +56,8 @@ public interface ProcessDefinitionService {
 
     /**
      * 设置初始流程变量
-     * @param processDefinitionId 流程定义id
-     * @param initProcessVariables 初始流程变量
+     * @param initProcessVariables 初始流程变量对象
      * */
-    void setInitProcessVariables(String processDefinitionId,Map<String,Object> initProcessVariables);
+    void setInitProcessVariables(InitProcessVariablesVO initProcessVariables);
 
 }

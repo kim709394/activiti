@@ -2,19 +2,18 @@ package com.kim.activiti.process.engine.entity.vo;
 
 import lombok.Data;
 
+import java.util.Map;
+
 /**
  * @author huangjie
  * @description
- * @date 2020/6/4
+ * @date 2020/6/28
  */
 @Data
-public class PendingTaskQueryInputVO  extends BaseQueryInput{
+public class InitProcessVariablesVO {
 
 
-
-    private String assignee;
-
-    /**流程定义id*/
     private String processDefinitionId;
+    private Map<String,Object> initProcessVariables;
 
 }

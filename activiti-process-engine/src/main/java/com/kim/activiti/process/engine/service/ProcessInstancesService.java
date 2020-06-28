@@ -2,6 +2,7 @@ package com.kim.activiti.process.engine.service;
 
 import com.kim.activiti.process.engine.entity.vo.ProcessInstanceQueryInputVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessInstanceQueryOutputVO;
+import com.kim.activiti.process.engine.entity.vo.StartProcessInstanceVO;
 
 import java.util.Map;
 
@@ -15,13 +16,11 @@ public interface ProcessInstancesService {
 
     /**
      * 根据流程定义id启动一个流程实例
-     * @param processDefinitionId  流程定义id
-     * @param  creator 创建人，可以为id，可以为name
-     * @param  bussinessVariables  业务变量
+     * @param startProcessInstanceVO  启动流程实例对象
      * @return String 流程实例id
      * */
 
-    String startProcessInstanceByProcessDefId(String processDefinitionId,String creator,Map<String,Object> bussinessVariables);
+    String startProcessInstanceByProcessDefId(StartProcessInstanceVO startProcessInstanceVO);
 
 
     /**

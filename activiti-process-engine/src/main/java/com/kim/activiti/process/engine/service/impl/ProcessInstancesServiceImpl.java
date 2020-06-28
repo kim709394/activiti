@@ -3,6 +3,7 @@ package com.kim.activiti.process.engine.service.impl;
 import com.kim.activiti.process.engine.entity.vo.ProcessInstanceQueryInputVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessInstanceQueryOutputVO;
 import com.kim.activiti.process.engine.entity.vo.ProcessInstanceVO;
+import com.kim.activiti.process.engine.entity.vo.StartProcessInstanceVO;
 import com.kim.activiti.process.engine.listener.businesslistener.ProcessInstanceStartListener;
 import com.kim.activiti.process.engine.service.ProcessDefinitionService;
 import com.kim.activiti.process.engine.service.ProcessInstancesService;
@@ -39,19 +40,19 @@ public class ProcessInstancesServiceImpl implements ProcessInstancesService {
 	private List<ProcessInstanceStartListener> processInstanceStartListeners;
 
 	@Override
-	public String startProcessInstanceByProcessDefId(String processDefinitionId,String creator,Map<String,Object> bussinessVariables) {
-		Map<String, Object> initProcessVariables = processDefinitionService.getInitProcessVariables(processDefinitionId);
+	public String startProcessInstanceByProcessDefId(StartProcessInstanceVO startProcessInstanceVO) {
+		Map<String, Object> initProcessVariables = processDefinitionService.getInitProcessVariables(startProcessInstanceVO.getProcessDefinitionId());
 		if(processInstanceStartListeners!=null&&processInstanceStartListeners.size()>0){
 			for (ProcessInstanceStartListener listener:processInstanceStartListeners
 				 ) {
-				if(StringUtils.equals(processDefinitionId,listener.getProcessDefinitionId())){
-					listener.bussinessHandle(initProcessVariables,bussinessVariables);
+				if(StringUtils.equals(startProcessInstanceVO.getProcessDefinitionId(),listener.getProcessDefinitionId())){
+					listener.bussinessHandle(initProcessVariables,startProcessInstanceVO.getBussinessVariables());
 					break;
 				}
 			}
 		}
 
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionId, creator, initProcessVariables);
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(startProcessInstanceVO.getProcessDefinitionId(), startProcessInstanceVO.getCreator(), initProcessVariables);
 		return processInstance.getId();
 	}
 

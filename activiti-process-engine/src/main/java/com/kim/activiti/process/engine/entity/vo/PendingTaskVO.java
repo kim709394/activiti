@@ -2,6 +2,8 @@ package com.kim.activiti.process.engine.entity.vo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @author huangjie
  * @description  待办任务对象
@@ -24,7 +26,14 @@ public class PendingTaskVO {
 
     /**审批人*/
     private String assignee;
+    /**创建时间*/
+    private Date createTime;
 
+    /**任务名字*/
+    private String taskName;
+
+    /**任务key，流程设计器中的usertask*/
+    private String taskKey;
 
 
 

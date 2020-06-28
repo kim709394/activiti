@@ -1,5 +1,7 @@
 package com.kim.activiti.process.engine.listener.businesslistener;
 
+import com.kim.activiti.process.engine.entity.vo.CommitTaskVO;
+
 import java.util.Map;
 
 /**
@@ -26,11 +28,11 @@ public interface CommitTaskListener {
     /**
      * 完成任务之前进行业务逻辑处理,进一步设置流程变量等操作
      * */
-    void commitBeforeBusniessHandle(String processInstanceId, Map<String,Object> processVariables,String taskId,String assignee);
+    void commitBeforeBusniessHandle(CommitTaskVO commitTaskVO);
 
     /**
      * 完成任务之后进行业务逻辑处理，后台自动审批某些任务节点等操作
      * */
-    void commitAfterBusniessHandle(String processInstanceId, Map<String,Object> processVariables,String taskId,String assignee);
+    void commitAfterBusniessHandle(CommitTaskVO commitTaskVO);
 
 }

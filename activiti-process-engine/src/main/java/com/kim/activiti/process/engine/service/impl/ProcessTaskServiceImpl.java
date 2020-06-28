@@ -1,17 +1,25 @@
 package com.kim.activiti.process.engine.service.impl;
 
 import com.kim.activiti.process.engine.entity.vo.*;
+import com.kim.activiti.process.engine.listener.businesslistener.CommitTaskListener;
 import com.kim.activiti.process.engine.service.ProcessTaskService;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -28,6 +36,10 @@ public class ProcessTaskServiceImpl  implements ProcessTaskService {
     private HistoryService historyService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private RepositoryService repositoryService;
+    @Autowired
+    private List<CommitTaskListener> commitTaskListeners;
 
     @Override
     public ProcessInstanceTaskQueryOutputVO queryPagingTasks(ProcessInstanceTaskQueryInputVO processInstanceTaskQueryInputVO) {
@@ -84,11 +96,91 @@ public class ProcessTaskServiceImpl  implements ProcessTaskService {
 
     @Override
     public PendingTaskQueryOutputVO queryPagingPendingTasks(PendingTaskQueryInputVO pendingTaskQueryInputVO) {
-        return null;
+        //根据条件获取查询对象
+        TaskQuery taskQuery = getTaskQuery(pendingTaskQueryInputVO);
+        //获取总记录数
+        long count = taskQuery.count();
+        //获取分页集合
+        List<Task> tasks = taskQuery.orderByTaskCreateTime().desc().listPage(pendingTaskQueryInputVO.getPageNo() * pendingTaskQueryInputVO.getPageSize(), pendingTaskQueryInputVO.getPageSize());
+        //对象转换
+        List<PendingTaskVO> pendingTaskVOs=convertTask(tasks,pendingTaskQueryInputVO.getAssignee());
+        //封装分页输出对象
+        PendingTaskQueryOutputVO pendingTaskQueryOutputVO=new PendingTaskQueryOutputVO();
+        pendingTaskQueryOutputVO.setList(pendingTaskVOs);
+        pendingTaskQueryOutputVO.setPageCount(Integer.parseInt(count+""));
+        pendingTaskQueryOutputVO.setPageNo(pendingTaskQueryInputVO.getPageNo());
+        pendingTaskQueryOutputVO.setPageSize(pendingTaskQueryInputVO.getPageSize());
+        pendingTaskQueryOutputVO.setTotalPage(getTotal(Integer.parseInt(count+""),pendingTaskQueryInputVO.getPageSize()));
+        return pendingTaskQueryOutputVO;
+    }
+
+    private List<PendingTaskVO> convertTask(List<Task> tasks,String assignee){
+        List<PendingTaskVO> pendingTaskVOs=new ArrayList<>();
+        if(tasks!=null&&tasks.size()>0){
+            for (Task task:tasks
+                 ) {
+                PendingTaskVO pendingTaskVO=new PendingTaskVO();
+                pendingTaskVO.setTaskId(task.getId());
+                pendingTaskVO.setAssignee(task.getAssignee()==null?assignee:task.getAssignee());
+                pendingTaskVO.setProcessDefinitionId(task.getProcessDefinitionId());
+                ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(task.getProcessDefinitionId()).singleResult();
+                pendingTaskVO.setProcessDefinitionName(processDefinition.getName());
+                pendingTaskVO.setProcessInstanceId(task.getProcessInstanceId());
+                pendingTaskVO.setTenantId(processDefinition.getTenantId());
+                pendingTaskVO.setCreateTime(task.getCreateTime());
+                pendingTaskVO.setTaskName(task.getName());
+                pendingTaskVO.setTaskKey(task.getTaskDefinitionKey());
+                pendingTaskVOs.add(pendingTaskVO);
+            }
+        }
+        return pendingTaskVOs;
+    }
+
+    private TaskQuery getTaskQuery(PendingTaskQueryInputVO queryInputVO){
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        if(StringUtils.isNotEmpty(queryInputVO.getAssignee())){
+            taskQuery=taskQuery.taskCandidateOrAssigned(queryInputVO.getAssignee());
+        }
+        if(StringUtils.isNotEmpty(queryInputVO.getProcessDefinitionId())){
+            taskQuery=taskQuery.processDefinitionId(queryInputVO.getProcessDefinitionId());
+        }
+        return taskQuery;
     }
 
     @Override
     public void commitTask(CommitTaskVO commitTaskVO) {
+        //获取任务对象
+        Task task = taskService.createTaskQuery().taskId(commitTaskVO.getTaskId()).singleResult();
+        //获取任务对应的流程定义对象
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(task.getProcessDefinitionId()).singleResult();
+        //获取办理任务业务监听器
+        CommitTaskListener commitTaskListener=null;
+        if(commitTaskListeners!=null&&commitTaskListeners.size()>0){
+            for (CommitTaskListener listener: commitTaskListeners
+                 ) {
+                if(StringUtils.equals(listener.getTaskDefinitionKey(),task.getTaskDefinitionKey())
+                &&(StringUtils.equals(listener.getProcessDefinitionIdOrKey(),task.getProcessDefinitionId())||StringUtils.equals(listener.getProcessDefinitionIdOrKey(),processDefinition.getKey()))){
+                    commitTaskListener=listener;
+                    break;
+                }
+            }
+        }
+        //办理任务前逻辑操作
+        if(commitTaskListener!=null){
+            commitTaskListener.commitBeforeBusniessHandle(commitTaskVO);
 
+        }
+        //办理任务
+        String taskId=task.getId();
+        taskService.setOwner(taskId,commitTaskVO.getOwner());
+        taskService.setDueDate(taskId,new Date());
+        taskService.setAssignee(taskId,commitTaskVO.getAssignee());
+        task.setDescription(commitTaskVO.getPlatform());
+        taskService.addComment(taskId,commitTaskVO.getProcessInstanceId(),commitTaskVO.getComment());
+        taskService.complete(taskId,commitTaskVO.getProcessVariables());
+        //办理任务后业务逻辑操作
+        if(commitTaskListener!=null){
+            commitTaskListener.commitAfterBusniessHandle(commitTaskVO);
+        }
     }
 }
